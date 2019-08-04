@@ -46,16 +46,16 @@ router.get('/user/:userId', (req, res) => {
   Story.find({ user: req.params.userId, status: 'public' })
     .populate('user')
     .then(stories => {
-      res.render('stories/index', stories);
+      res.render('stories/index', { stories });
     });
 });
 
 // List Stories from Logged in user
 router.get('/my', ensureAuthenticated, (req, res) => {
-  Story.find({ user: req.user._id })
+  Story.find({ user: req.user.id })
     .populate('user')
     .then(stories => {
-      res.render('stories/index', stories);
+      res.render('stories/index', { stories });
     });
 });
 
@@ -69,10 +69,12 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
   Story.findOne({
     _id: req.params.id
   }).then(story => {
-    if (story.user !== req.user._id) {
+    if (story.user != req.user.id) {
       res.redirect('/stories');
     } else {
-      res.render('stories/edit', { story });
+      res.render('stories/edit', {
+        story: story
+      });
     }
   });
 });
