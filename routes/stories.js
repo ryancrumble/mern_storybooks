@@ -52,7 +52,7 @@ router.get('/user/:userId', (req, res) => {
 
 // List Stories from Logged in user
 router.get('/my', ensureAuthenticated, (req, res) => {
-  Story.find({ user: req.user.id })
+  Story.find({ user: req.user._id })
     .populate('user')
     .then(stories => {
       res.render('stories/index', stories);
@@ -69,7 +69,7 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
   Story.findOne({
     _id: req.params.id
   }).then(story => {
-    if (story.user !== req.user.id) {
+    if (story.user !== req.user._id) {
       res.redirect('/stories');
     } else {
       res.render('stories/edit', { story });
